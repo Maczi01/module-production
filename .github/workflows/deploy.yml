@@ -2,25 +2,25 @@ name: deploy website
 on:
   workflow_dispatch:
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v2 # Checks out the repository code
 
-      - name: Configure node
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version-file: '.nvmrc'
+          node-version: '16' # Specify the Node.js version
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install Dependencies
+        run: npm install
 
-#      - uses: actions/checkout@v2
-#      #  your build commands
-#      # - run: |
-#      #    ng build --prod
-      - uses: amondnet/vercel-action@v25 #deploy
+      - name: Build
+        run: npm run build # Builds the project using Vite
+
+      - name: Vercel Deployment
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: 'ExWPNFZYHLILtLK4E8M9Ft0y' # Required ExWPNFZYHLILtLK4E8M9Ft0y
           github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
