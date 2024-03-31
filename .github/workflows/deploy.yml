@@ -1,16 +1,35 @@
-name: Deploy CI
+# <project_root>/.github/workflows/hello.yml
+
+name: Hello world!
+
 on:
   workflow_dispatch:
+
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+  app-setup:
+    runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build App
+        run: npm run build
+
       - name: Deploy to Vercel Action
         uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERCEL_TOKEN: 'ExWPNFZYHLILtLK4E8M9Ft0y' # Required ExWPNFZYHLILtLK4E8M9Ft0y'
-          VERCEL_PROJECT_ID: 'prj_TvGs6R1u1WugcFSqmgVdHn7mIG6a'
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Greeting
+        run: echo "Brawo! Znakomita robota!" >> $GITHUB_STEP_SUMMARY
