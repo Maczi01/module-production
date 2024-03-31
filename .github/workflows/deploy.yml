@@ -13,5 +13,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERCEL_TOKEN: 'ExWPNFZYHLILtLK4E8M9Ft0y' # Required ExWPNFZYHLILtLK4E8M9Ft0y'
-          VERCEL_ORG_ID:  'mateusz.w.twardy@gmail.com'
           VERCEL_PROJECT_ID: 'prj_TvGs6R1u1WugcFSqmgVdHn7mIG6a'
