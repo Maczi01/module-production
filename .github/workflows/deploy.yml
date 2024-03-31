@@ -1,32 +1,17 @@
-name: deploy website
-
+name: Deploy CI
 on:
-  workflow_dispatch: # Allows you to manually trigger the workflow
-
+  workflow_dispatch:
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
-      - uses: actions/checkout@v2 # Checks out the repository code
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Deploy to Vercel Action
+        uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
-          node-version: '16' # Specify the Node.js version
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build # Builds the project using Vite
-
-      - name: Vercel Deployment
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: 'ExWPNFZYHLILtLK4E8M9Ft0y' # Required ExWPNFZYHLILtLK4E8M9Ft0y
-          github-token: ${{ secrets.GITHUB_TOKEN }} #Optional
-          vercel-args: '--prod' #Optional
-          vercel-org-id: 'mateusz.w.twardy@gmail.com'  #Required mateusz.w.twardy@gmail.com
-          vercel-project-id: 'prj_TvGs6R1u1WugcFSqmgVdHn7mIG6a' #Required prj_TvGs6R1u1WugcFSqmgVdHn7mIG6a
-          working-directory: ./sub-directory
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERCEL_TOKEN: 'ExWPNFZYHLILtLK4E8M9Ft0y' # Required ExWPNFZYHLILtLK4E8M9Ft0y'
+          VERCEL_ORG_ID:  'mateusz.w.twardy@gmail.com'
+          VERCEL_PROJECT_ID: 'prj_TvGs6R1u1WugcFSqmgVdHn7mIG6a'
