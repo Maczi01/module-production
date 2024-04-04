@@ -1,14 +1,13 @@
-name: GitHub Actions Vercel Production Deployment
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+# <project_root>/.github/workflows/hello.yml
+
+name: deploy
+
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
 jobs:
-  Deploy-Production:
-    runs-on: ubuntu-latest
+  app-setup:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install Vercel CLI
