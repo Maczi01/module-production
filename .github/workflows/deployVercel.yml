@@ -1,6 +1,6 @@
 # <project_root>/.github/workflows/hello.yml
 
-name: deploy
+name: deploy-vercel
 
 on:
   workflow_dispatch:

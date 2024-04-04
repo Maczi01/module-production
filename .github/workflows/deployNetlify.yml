@@ -1,21 +1,32 @@
 # <project_root>/.github/workflows/hello.yml
 
-name: deploy
+name: deploy-netlify
 
 on:
   workflow_dispatch:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Configure node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.9.0
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run unit tests
+        run: npm run test
 
       - name: Build app
         run: npm run build
@@ -24,9 +35,6 @@ jobs:
         uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: './dist'
-          production-branch: 'master'
+          production-branch: master
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: 'Deploy from GitHub Actions'
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          deploy-message: 'Deployed from GitHub Actions'
