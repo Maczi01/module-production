@@ -7,7 +7,7 @@ const Characters = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4" data-testid="characters-list">
-      <p className="font-bold mb-4">Select a character:</p>
+      <p className="font-bold mb-4">Select your character:</p>
       <ul>
         {characters.map((character) => (
           <li key={character.id} className="mb-4">
