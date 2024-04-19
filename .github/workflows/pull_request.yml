@@ -27,7 +27,7 @@ jobs:
         uses: ./.github/actions/deploy-vercel
         with:
           mode: 'preview'
-          vercel-token: ${{ secrets.PET_TOKEN }}
+          vercel-token: ${{ secrets.VERC_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
