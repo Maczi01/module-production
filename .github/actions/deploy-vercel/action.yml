@@ -1,33 +1,36 @@
 name: Deploy Vercel
 description: Deploy Vercel in two modes
 
-on: [push]
+inputs:
+  vercel-token:
+    description: 'Vercel token'
+    required: true
+  mode:
+    description: 'Deployment mode'
+    required: true
+    default: 'production'
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Vercel CLI
+      run: npm install --global vercel@canary
+      shell: bash
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@canary
-        shell: bash
+    - name: PROD Vercel Deployment
+      if: ${{ inputs.mode == 'production' }}
+      run: |
+        vercel pull --yes --environment=production --token=${{ inputs.vercel-token }}
+        vercel build --prod --token=${{ inputs.vercel-token }}
+        vercel deploy --prebuilt --prod --token=${{ inputs.vercel-token }}
+      shell: bash
 
-      - name: PROD Vercel Deployment
-        if: ${{ github.event.inputs.mode == 'production' }}
-        run: |
-          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        shell: bash
-
-      - name: PREVIEW Vercel Deployment
-        if: ${{ github.event.inputs.mode == 'preview' }}
-        run: |
-          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --token=${{ secrets.VERCEL_TOKEN }}
-          DEPLOY_OUTPUT="$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})"
-          DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep http | tail -n 1)
-          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
-        shell: bash
+    - name: PREVIEW Vercel Deployment
+      if: ${{ inputs.mode == 'preview' }}
+      run: |
+        vercel pull --yes --environment=preview --token=${{ inputs.vercel-token }}
+        vercel build --token=${{ inputs.vercel-token }}
+        DEPLOY_OUTPUT="$(vercel deploy --token=${{ inputs.vercel-token }})"
+        DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep http | tail -n 1)
+        echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+      shell: bash
