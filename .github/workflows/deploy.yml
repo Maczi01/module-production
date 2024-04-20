@@ -10,6 +10,10 @@ jobs:
     uses: ./.github/workflows/deploy-netlify.yml
     secrets: inherit
 
+  deploy-aws:
+    uses: ./.github/workflows/deploy-aws.yml
+    secrets: inherit
+
   deploy-vercel:
     needs: deploy-netlify
     uses: ./.github/workflows/deploy-vercel.yml
